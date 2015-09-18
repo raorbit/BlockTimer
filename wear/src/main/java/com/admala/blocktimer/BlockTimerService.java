@@ -56,7 +56,26 @@ public class BlockTimerService extends CanvasWatchFaceService {
      * Handler message id for updating the time periodically in interactive mode.
      */
     private static final int MSG_UPDATE_TIME = 0;
+    private static void setTextSizeForWidth(Paint paint, float desiredWidth,
+                                            String text) {
 
+        // Pick a reasonably large value for the test. Larger values produce
+        // more accurate results, but may cause problems with hardware
+        // acceleration. But there are workarounds for that, too; refer to
+        // http://stackoverflow.com/questions/6253528/font-size-too-large-to-fit-in-cache
+        final float testTextSize = 48f;
+
+        // Get the bounds of the text, using our testTextSize.
+        paint.setTextSize(testTextSize);
+        Rect bounds = new Rect();
+        paint.getTextBounds(text, 0, text.length(), bounds);
+
+        // Calculate the desired size as a proportion of our testTextSize.
+        float desiredTextSize = testTextSize * desiredWidth / bounds.width();
+
+        // Set the paint for that size.
+        paint.setTextSize(desiredTextSize);
+    }
     @Override
     public Engine onCreateEngine() {
         return new Engine();
@@ -123,6 +142,7 @@ public class BlockTimerService extends CanvasWatchFaceService {
             paint.setColor(textColor);
             paint.setTypeface(NORMAL_TYPEFACE);
             paint.setAntiAlias(true);
+         //   paint.setTextAlign(Paint.Align.CENTER );
             return paint;
         }
 
@@ -215,8 +235,16 @@ public class BlockTimerService extends CanvasWatchFaceService {
             String text = mAmbient
                     ? String.format("%d:%02d", mTime.hour, mTime.minute)
                     : String.format("%d:%02d:%02d", mTime.hour, mTime.minute, mTime.second);
-          //  canvas.drawText(text, mXOffset, mYOffset, mTextPaint);
-            canvas.drawText(""+mTime.yearDay, mXOffset, mYOffset, mTextPaint);
+            canvas.drawText(text,0,mYOffset/3, mTextPaint);
+            boolean isWednesday=false;
+            if(mTime.weekDay==Time.WEDNESDAY){
+            isWednesday=true;
+            }
+            int minutes=(mTime.hour*60)+mTime.minute;
+            Blocks blocks=new Blocks(isWednesday,minutes);
+            Paint temp=createTextPaint(mTextPaint.getColor());
+            setTextSizeForWidth(temp,320,blocks.getText());
+            canvas.drawText(blocks.getText(),0, mYOffset, temp);
         }
 
         /**
