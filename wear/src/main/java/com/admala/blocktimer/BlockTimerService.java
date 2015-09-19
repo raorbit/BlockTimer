@@ -31,8 +31,9 @@ import android.os.Message;
 import android.support.wearable.watchface.CanvasWatchFaceService;
 import android.support.wearable.watchface.WatchFaceStyle;
 import android.text.format.Time;
-import android.view.SurfaceHolder;
+import android.view.*;
 import android.view.WindowInsets;
+import android.widget.TextView;
 
 import java.lang.ref.WeakReference;
 import java.util.TimeZone;
@@ -98,11 +99,12 @@ public class BlockTimerService extends CanvasWatchFaceService {
         Paint mTextPaint;
 
         boolean mAmbient;
-
+        private View myLayout;
         Time mTime;
 
         float mXOffset;
         float mYOffset;
+        TextView date,message;
 
         /**
          * Whether the display supports fewer bits for each color in ambient mode. When true, we
@@ -129,6 +131,10 @@ public class BlockTimerService extends CanvasWatchFaceService {
             mTextPaint = createTextPaint(resources.getColor(R.color.digital_text));
 
             mTime = new Time();
+            LayoutInflater inflater =   (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            myLayout = inflater.inflate(R.layout.watchface, null);
+            date=(TextView) myLayout.findViewById(R.id.Date);
+            message=(TextView) myLayout.findViewById(R.id.Message);
         }
 
         @Override
@@ -142,7 +148,6 @@ public class BlockTimerService extends CanvasWatchFaceService {
             paint.setColor(textColor);
             paint.setTypeface(NORMAL_TYPEFACE);
             paint.setAntiAlias(true);
-         //   paint.setTextAlign(Paint.Align.CENTER );
             return paint;
         }
 
@@ -227,7 +232,9 @@ public class BlockTimerService extends CanvasWatchFaceService {
 
         @Override
         public void onDraw(Canvas canvas, Rect bounds) {
-            // Draw the background.
+            mTime.setToNow();
+            date.setText(String.format("%ta", mTime.toMillis(false)));
+          /*  // Draw the background.
             canvas.drawRect(0, 0, bounds.width(), bounds.height(), mBackgroundPaint);
 
             // Draw H:MM in ambient mode or H:MM:SS in interactive mode.
@@ -235,6 +242,8 @@ public class BlockTimerService extends CanvasWatchFaceService {
             String text = mAmbient
                     ? String.format("%d:%02d", mTime.hour, mTime.minute)
                     : String.format("%d:%02d:%02d", mTime.hour, mTime.minute, mTime.second);
+          //  canvas.drawText(text, mXOffset, mYOffset, mTextPaint);
+            canvas.drawText(""+mTime.yearDay, mXOffset, mYOffset, mTextPaint);*/
             canvas.drawText(text,0,mYOffset/3, mTextPaint);
             boolean isWednesday=false;
             if(mTime.weekDay==Time.WEDNESDAY){
