@@ -243,8 +243,8 @@ public class BlockTimerService extends CanvasWatchFaceService {
                     ? String.format("%d:%02d", mTime.hour, mTime.minute)
                     : String.format("%d:%02d:%02d", mTime.hour, mTime.minute, mTime.second);
           //  canvas.drawText(text, mXOffset, mYOffset, mTextPaint);
-            canvas.drawText(""+mTime.yearDay, mXOffset, mYOffset, mTextPaint);*/
-            canvas.drawText(text,0,mYOffset/3, mTextPaint);
+
+            canvas.drawText(text,0,mYOffset/3, mTextPaint);*/
             boolean isWednesday=false;
             if(mTime.weekDay==Time.WEDNESDAY){
             isWednesday=true;
